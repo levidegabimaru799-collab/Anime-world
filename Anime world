@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anime World - Streaming</title>
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    color: white;
+    overflow-x: hidden;
+}
+
+/* Fond animé */
+.background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(-45deg, #0f0f0f, #1a1a2e, #16213e, #000);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    z-index: -1;
+}
+
+@keyframes gradientBG {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+header {
+    padding: 20px;
+    text-align: center;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
+}
+
+nav a {
+    margin: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    color: crimson;
+}
+
+.page {
+    display: none;
+    padding: 40px;
+    text-align: center;
+    animation: fadeIn 0.8s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+.card {
+    background: rgba(0,0,0,0.6);
+    margin: 30px auto;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 600px;
+    backdrop-filter: blur(15px);
+    transition: 0.4s;
+}
+
+.card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 25px crimson;
+}
+
+video, img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+button {
+    background: crimson;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: darkred;
+    transform: scale(1.1);
+}
+
+.main-btn {
+    margin-top: 20px;
+    padding: 12px 25px;
+    font-size: 18px;
+}
+
+.comments input {
+    width: 100%;
+    margin-top: 15px;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+}
+
+.comments ul {
+    list-style: none;
+    margin-top: 10px;
+}
+
+.comments li {
+    background: #222;
+    margin: 5px 0;
+    padding: 8px;
+    border-radius: 8px;
+    animation: fadeIn 0.5s ease;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0,0,0,0.5);
+    margin-top: 40px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="background"></div>
+
+<header>
+    <h1>🌍 Anime World</h1>
+    <nav>
+        <a onclick="showPage('home')">Accueil</a>
+        <a onclick="showPage('videos')">Vidéos</a>
+        <a onclick="showPage('gallery')">Galerie</a>
+    </nav>
+</header>
+
+<section id="home" class="page active">
+    <h2>Bienvenue dans l'univers des animés</h2>
+    <p>Streaming • Téléchargement • Likes • Commentaires</p>
+    <button class="main-btn" onclick="showPage('videos')">Commencer</button>
+</section>
+
+<section id="videos" class="page">
+    <h2>🎬 Streaming Animé</h2>
+
+    <div class="card">
+        <video controls>
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        </video>
+
+        <div class="actions">
+            <button onclick="like('video1')">❤️ <span id="video1-likes">0</span></button>
+            <a href="https://www.w3schools.com/html/mov_bbb.mp4" download>Télécharger</a>
+        </div>
+
+        <div class="comments">
+            <input type="text" placeholder="Ajouter un commentaire..." 
+            onkeypress="addComment(event,'video1')">
+            <ul id="video1-comments"></ul>
+        </div>
+    </div>
+</section>
+
+<section id="gallery" class="page">
+    <h2>🖼 Galerie 4K</h2>
+
+    <div class="card">
+        <img src="https://wallpaperaccess.com/full/1637782.jpg">
+
+        <div class="actions">
+            <button onclick="like('photo1')">❤️ <span id="photo1-likes">0</span></button>
+            <a href="https://wallpaperaccess.com/full/1637782.jpg" download>Télécharger</a>
+        </div>
+
+        <div class="comments">
+            <input type="text" placeholder="Ajouter un commentaire..." 
+            onkeypress="addComment(event,'photo1')">
+            <ul id="photo1-comments"></ul>
+        </div>
+    </div>
+</section>
+
+<footer>
+    © 2026 Anime World - Plateforme Animé
+</footer>
+
+<script src="script.js">
+
+function showPage(id) {
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
+    document.getElementById(id).classList.add("active");
+}
+
+function like(id) {
+    let count = localStorage.getItem(id + "-likes") || 0;
+    count++;
+    localStorage.setItem(id + "-likes", count);
+    document.getElementById(id + "-likes").innerText = count;
+}
+
+function addComment(event, id) {
+    if (event.key === "Enter") {
+        let text = event.target.value;
+        if (text.trim() === "") return;
+
+        let comments = JSON.parse(localStorage.getItem(id + "-comments") || "[]");
+        comments.push(text);
+        localStorage.setItem(id + "-comments", JSON.stringify(comments));
+
+        let li = document.createElement("li");
+        li.textContent = text;
+        document.getElementById(id + "-comments").appendChild(li);
+
+        event.target.value = "";
+    }
+}
+
+window.onload = function() {
+    ["video1","photo1"].forEach(id => {
+        let count = localStorage.getItem(id + "-likes") || 0;
+        document.getElementById(id + "-likes").innerText = count;
+
+        let comments = JSON.parse(localStorage.getItem(id + "-comments") || "[]");
+        comments.forEach(text => {
+            let li = document.createElement("li");
+            li.textContent = text;
+            document.getElementById(id + "-comments").appendChild(li);
+        });
+    });
+};
+
+</script>
+</body>
+</html>
+
